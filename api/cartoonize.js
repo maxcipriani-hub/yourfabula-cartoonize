@@ -32,30 +32,20 @@ const { imageBase64, name, mimeType } = req.body || {};
       `linee morbide, colori caldi, aspetto amichevole. Mantieni somiglianza e volto riconoscibile. ` +
       `Sfondo semplice.`;
 
-    // Base64 -> file PNG (Buffer) con filename (IMPORTANTISSIMO)
-    const imageBuffer = Buffer.from(imageBase64, "base64");
+    // Base64 -> Buffer
+const imageBuffer = Buffer.from(imageBase64, "base64");
 
-// fallback + whitelist mime
-const safeMime = (mimeType || "").toLowerCase();
-const allowed = new Set(["image/png", "image/jpeg", "image/jpg", "image/webp"]);
+// ✅ DALL·E 2 edits vuole PNG: forza sempre PNG
+const blob = new Blob([imageBuffer], { type: "image/png" });
 
-const finalMime = allowed.has(safeMime)
-  ? (safeMime === "image/jpg" ? "image/jpeg" : safeMime)
-  : "image/jpeg";
+const form = new FormData();
+form.append("model", "dall-e-2");
+form.append("prompt", prompt);
+form.append("size", "512x512");
 
-const ext = finalMime === "image/png" ? "png" :
-            finalMime === "image/webp" ? "webp" : "jpg";
+// 👇 campo richiesto (PNG fisso)
+form.append("image", blob, "photo.png");
 
-const blob = new Blob([imageBuffer], { type: finalMime });
-
-
-    const form = new FormData();
-    form.append("model", "dall-e-2");
-    form.append("prompt", prompt);
-    form.append("size", "512x512");
-
-    // 👇 campo richiesto per /v1/images/edits
-form.append("image", blob, `photo.${ext}`);
 
     const response = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
