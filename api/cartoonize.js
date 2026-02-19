@@ -50,7 +50,7 @@ const blob = new Blob([imageBuffer], { type: finalMime });
 
 
     const form = new FormData();
-    form.append("model", "gpt-image-1-mini");
+    form.append("model", "dall-e-2");
     form.append("prompt", prompt);
     form.append("size", "512x512");
 
