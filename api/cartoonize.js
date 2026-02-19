@@ -39,13 +39,20 @@ const imageBuffer = Buffer.from(imageBase64, "base64");
 const blob = new Blob([imageBuffer], { type: "image/png" });
 
 const form = new FormData();
-form.append("model", "gpt-image-1");
-form.append("response_format", "b64_json");
+
+// ✅ modello economico
+form.append("model", "gpt-image-1-mini");
+
+// prompt + qualità/size
 form.append("prompt", prompt);
 form.append("size", "512x512");
+form.append("quality", "low");              // ✅ supportato dai GPT Image models
+form.append("output_format", "png");        // ✅ output PNG
+form.append("response_format", "b64_json"); // ✅ per avere base64 in risposta
 
-// 👇 campo richiesto (PNG fisso)
-form.append("image", blob, "photo.png");
+// ⚠️ IMPORTANTE: per GPT Image models usa image[] (non image)
+form.append("image[]", blob, "photo.png");
+;
 
 
     const response = await fetch("https://api.openai.com/v1/images/edits", {
