@@ -39,7 +39,7 @@ if (req.method === "OPTIONS") {
     const form = new FormData();
     form.append("model", "gpt-image-1-mini");
     form.append("prompt", prompt);
-    form.append("size", "1024x1024");
+    form.append("size", "512x512");
     form.append("quality", "low");
 
 
