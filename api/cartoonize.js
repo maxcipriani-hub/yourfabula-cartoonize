@@ -28,9 +28,9 @@ const { imageBase64, name, mimeType } = req.body || {};
     // Prompt cartoon
     const safeName = (name || "").toString().trim();
     const prompt =
-      `Trasforma la persona della foto in stile cartoon illustrato, pulito e premium, ` +
-      `linee morbide, colori caldi, aspetto amichevole. Mantieni somiglianza e volto riconoscibile. ` +
-      `Sfondo semplice.`;
+       "Converti la persona in un'illustrazione cartoon 2D premium stile Disney attenzione copyright (stile libro illustrato), " +
+  "linee pulite, shading morbido, colori caldi. Mantieni volto e tratti riconoscibili. " +
+  "Rimuovi look fotografico: nessuna texture foto/rumore. Sfondo semplice, chiaro.";
 
     // Base64 -> Buffer
 const imageBuffer = Buffer.from(imageBase64, "base64");
@@ -39,7 +39,8 @@ const imageBuffer = Buffer.from(imageBase64, "base64");
 const blob = new Blob([imageBuffer], { type: "image/png" });
 
 const form = new FormData();
-form.append("model", "dall-e-2");
+form.append("model", "gpt-image-1");
+form.append("response_format", "b64_json");
 form.append("prompt", prompt);
 form.append("size", "512x512");
 
