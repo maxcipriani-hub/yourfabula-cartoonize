@@ -65,14 +65,32 @@ form.append("image", blob, "photo.png");
       });
     }
 
-    // gpt-image-1 ritorna base64 in data[0].b64_json
-    const cartoonImageBase64 = data?.data?.[0]?.b64_json;
-    if (!cartoonImageBase64) {
-      return res.status(500).json({
-        error: "No image returned from OpenAI",
-        details: data,
-      });
-    }
+    // DALL·E 2 può tornare b64_json oppure url
+let cartoonImageBase64 = data?.data?.[0]?.b64_json;
+
+if (!cartoonImageBase64) {
+  const imageUrl = data?.data?.[0]?.url;
+
+  if (!imageUrl) {
+    return res.status(500).json({
+      error: "No image returned from OpenAI",
+      details: data,
+    });
+  }
+
+  // scarica l’immagine dal link (server-side, niente CORS)
+  const imgRes = await fetch(imageUrl);
+  if (!imgRes.ok) {
+    return res.status(500).json({
+      error: "Failed to fetch generated image URL",
+      details: { status: imgRes.status, statusText: imgRes.statusText },
+    });
+  }
+
+  const arrayBuffer = await imgRes.arrayBuffer();
+  cartoonImageBase64 = Buffer.from(arrayBuffer).toString("base64");
+}
+
 
     // Titolo suggerito (semplice)
     const title = safeName ? `Le Avventure di ${safeName}` : "Le Avventure di …";
