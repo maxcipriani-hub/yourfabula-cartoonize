@@ -15,7 +15,7 @@ if (req.method === "OPTIONS") {
       return res.status(405).json({ error: "Use POST" });
     }
 
-    const { imageBase64, name } = req.body || {};
+const { imageBase64, name, mimeType } = req.body || {};
     if (!imageBase64) {
       return res.status(400).json({ error: "Missing imageBase64" });
     }
@@ -34,7 +34,20 @@ if (req.method === "OPTIONS") {
 
     // Base64 -> file PNG (Buffer) con filename (IMPORTANTISSIMO)
     const imageBuffer = Buffer.from(imageBase64, "base64");
-    const blob = new Blob([imageBuffer], { type: "image/png" });
+
+// fallback + whitelist mime
+const safeMime = (mimeType || "").toLowerCase();
+const allowed = new Set(["image/png", "image/jpeg", "image/jpg", "image/webp"]);
+
+const finalMime = allowed.has(safeMime)
+  ? (safeMime === "image/jpg" ? "image/jpeg" : safeMime)
+  : "image/jpeg";
+
+const ext = finalMime === "image/png" ? "png" :
+            finalMime === "image/webp" ? "webp" : "jpg";
+
+const blob = new Blob([imageBuffer], { type: finalMime });
+
 
     const form = new FormData();
     form.append("model", "gpt-image-1-mini");
@@ -44,7 +57,7 @@ if (req.method === "OPTIONS") {
 
 
     // 👇 campo richiesto per /v1/images/edits
-    form.append("image", blob, "photo.png");
+form.append("image", blob, `photo.${ext}`);
 
     const response = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
