@@ -37,12 +37,13 @@ Mantieni la somiglianza del volto.
     form.append("model", "gpt-image-1");
     form.append("prompt", prompt);
     form.append("size", "1024x1024");
-    form.append("response_format", "b64_json");
+    form.append("image", imageBuffer);
 
     const blob = new Blob([buffer], { type: "image/png" });
     form.append("image", blob, "input.png");
 
-    const response = await fetch("https://api.openai.com/v1/images/edits", {
+    const response = await fetch("https://api.openai.com/v1/images", {
+
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`
