@@ -29,7 +29,7 @@ const { imageBase64, name, mimeType } = req.body || {};
     const safeName = (name || "").toString().trim();
     const prompt =
        "Converti la persona in un'illustrazione cartoon 2D premium stile Disney attenzione copyright (stile libro illustrato), " +
-  "linee pulite, shading morbido, colori caldi. Mantieni volto e tratti riconoscibili. " +
+  "Adatta il personaggio in un contesto dove è protagonista di un avventura epica " +
   "Rimuovi look fotografico: nessuna texture foto/rumore. Sfondo semplice, chiaro.";
 
     // Base64 -> Buffer
