@@ -37,9 +37,11 @@ if (req.method === "OPTIONS") {
     const blob = new Blob([imageBuffer], { type: "image/png" });
 
     const form = new FormData();
-    form.append("model", "gpt-image-1");
+    form.append("model", "gpt-image-1-mini");
     form.append("prompt", prompt);
     form.append("size", "1024x1024");
+    form.append("quality", "low");
+
 
     // 👇 campo richiesto per /v1/images/edits
     form.append("image", blob, "photo.png");
