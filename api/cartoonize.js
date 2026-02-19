@@ -53,8 +53,6 @@ const blob = new Blob([imageBuffer], { type: finalMime });
     form.append("model", "gpt-image-1-mini");
     form.append("prompt", prompt);
     form.append("size", "512x512");
-    form.append("quality", "low");
-
 
     // 👇 campo richiesto per /v1/images/edits
 form.append("image", blob, `photo.${ext}`);
