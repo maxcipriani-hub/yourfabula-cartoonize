@@ -45,10 +45,8 @@ form.append("model", "gpt-image-1-mini");
 
 // prompt + qualità/size
 form.append("prompt", prompt);
-form.append("size", "512x512");
-form.append("quality", "low");              // ✅ supportato dai GPT Image models
+form.append("size", "1024x1024");
 form.append("output_format", "png");        // ✅ output PNG
-form.append("response_format", "b64_json"); // ✅ per avere base64 in risposta
 
 // ⚠️ IMPORTANTE: per GPT Image models usa image[] (non image)
 form.append("image[]", blob, "photo.png");
