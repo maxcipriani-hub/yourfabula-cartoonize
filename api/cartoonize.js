@@ -1,5 +1,15 @@
 export default async function handler(req, res) {
   try {
+    // ===== CORS (per Shopify / browser) =====
+res.setHeader("Access-Control-Allow-Origin", "https://yourfabula.it");
+res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+// Preflight
+if (req.method === "OPTIONS") {
+  return res.status(200).end();
+}
+
     // Solo POST
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Use POST" });
