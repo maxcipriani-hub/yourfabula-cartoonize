@@ -52,7 +52,6 @@ form.append("response_format", "b64_json"); // ✅ per avere base64 in risposta
 
 // ⚠️ IMPORTANTE: per GPT Image models usa image[] (non image)
 form.append("image[]", blob, "photo.png");
-;
 
 
     const response = await fetch("https://api.openai.com/v1/images/edits", {
@@ -73,31 +72,16 @@ form.append("image[]", blob, "photo.png");
       });
     }
 
-    // DALL·E 2 può tornare b64_json oppure url
-let cartoonImageBase64 = data?.data?.[0]?.b64_json;
+   // ✅ GPT Image models: ci aspettiamo b64_json
+const cartoonImageBase64 = data?.data?.[0]?.b64_json;
 
 if (!cartoonImageBase64) {
-  const imageUrl = data?.data?.[0]?.url;
-
-  if (!imageUrl) {
-    return res.status(500).json({
-      error: "No image returned from OpenAI",
-      details: data,
-    });
-  }
-
-  // scarica l’immagine dal link (server-side, niente CORS)
-  const imgRes = await fetch(imageUrl);
-  if (!imgRes.ok) {
-    return res.status(500).json({
-      error: "Failed to fetch generated image URL",
-      details: { status: imgRes.status, statusText: imgRes.statusText },
-    });
-  }
-
-  const arrayBuffer = await imgRes.arrayBuffer();
-  cartoonImageBase64 = Buffer.from(arrayBuffer).toString("base64");
+  return res.status(500).json({
+    error: "No image returned from OpenAI",
+    details: data,
+  });
 }
+
 
 
     // Titolo suggerito (semplice)
